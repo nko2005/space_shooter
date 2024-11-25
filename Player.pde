@@ -5,13 +5,13 @@ class Player {
   float angle;
   boolean moveUp, moveDown, moveLeft, moveRight;
   float speed;
-  PImage photo; // To store the player's image
+  //PImage photo; // To store the player's image
   ArrayList<Bullet> bullets = new ArrayList<Bullet>(); // Store bullets
   float player_score=0.0;
   float moveX,moveY;
   float lookX,lookY;
   float deadzone = 0.1;
-  float size =10;
+  float size =30;
   // Constructor to initialize position and health
   Player(float x, float y, float hp) {
     posX = x;

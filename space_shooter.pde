@@ -12,7 +12,7 @@ void getSerialData() {
   while (serialPort.available() > 0) {
     String in = serialPort.readStringUntil( 10 );  // 10 = '\n'  Linefeed in ASCII
     if (in != null) {
-      //print("From Arduino: " + in);
+      print("From Arduino: " + in);
       String[] serialInArray = split(trim(in), ",");
       if (serialInArray.length == NUM_OF_VALUES_FROM_ARDUINO) {
         for (int i=0; i<serialInArray.length; i++) {
@@ -143,7 +143,7 @@ void setup() {
 
   x = width / 2;
   y = height / 2;
-  player_1.photo = loadImage("spaceshipplaceholder.png"); // Load image only once
+  //player_1.photo = loadImage("spaceshipplaceholder.png"); // Load image only once
 
   zombies.add(new Zombie(200, 200, 20));
   zombies.add(new Zombie(400, 300, 20));

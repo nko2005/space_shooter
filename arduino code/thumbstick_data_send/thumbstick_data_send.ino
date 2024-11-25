@@ -32,5 +32,5 @@ void loop() {
 
   fire_button_prev = fire_button;
 
-  delay(10);  // Small delay to avoid overwhelming the serial buffer
+  delay(20);  // Small delay to avoid overwhelming the serial buffer
 }
