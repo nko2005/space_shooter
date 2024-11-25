@@ -11,6 +11,7 @@ class Player {
   float moveX,moveY;
   float lookX,lookY;
   float deadzone = 0.1;
+  float size =10;
   // Constructor to initialize position and health
   Player(float x, float y, float hp) {
     posX = x;
@@ -175,11 +176,19 @@ class Player {
   void displayPlayer() {
     //pushMatrix();
     push();
-    imageMode(CENTER);   
-    translate(posX, posY);  // Move the origin to the player's position
-    rotate(angle);        // Rotate the player to face the mouse
-    image(photo, 0, 0, 40, 40); // Draw the player image at the center
-    //popMatrix();
+     // Draw an equilateral triangle
+    translate(posX, posY);
+    rotate(angle);
+
+    fill(0, 255, 0);
+    stroke(0);
+    float h = sqrt(3) / 2 * size; // height of an equilateral triangle
+    beginShape();
+    rotate(100);
+    vertex(-size / 2, h / 2);
+    vertex(size / 2, h / 2);
+    vertex(0, -h / 2);
+    endShape(CLOSE);
     pop();
   }
   
