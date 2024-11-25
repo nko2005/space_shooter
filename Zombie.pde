@@ -4,8 +4,12 @@ class Zombie{
   float angle;
   float health=100;
   float size =10;
-  float speed =0.5;
+  float speed =2;
   float spacing_distance =20;
+  float attackRange = 10; // Range within which the zombie can attack
+  float attackDamage = 10; // Damage per attack
+  int attackCooldown = 60; // Frames between attacks
+  int attackTimer = 0;
   Zombie(float x,float y,float s){
     posX = x;
     posY = y;
@@ -39,10 +43,25 @@ posY += sin(angle) * speed;
           posY += sin(repulsionAngle) * repulsionStrength;
         }
       }
-   
  }
- 
+ // Check if within attack range and apply damage
+    if (dist(posX, posY, player.posX, player.posY) < attackRange) {
+      attackPlayer(player);
+    }
+
+    // Update attack timer
+    if (attackTimer > 0) {
+      attackTimer--;
+    }
+  
 }
+
+void attackPlayer(Player player) {
+    if (attackTimer == 0) {
+      player.takeDamage(attackDamage);
+      attackTimer = attackCooldown; // Reset cooldown timer
+    }
+  }
 
 void drawZombie() {
     push();

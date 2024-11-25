@@ -12,19 +12,26 @@ class Player {
   float lookX,lookY;
   float deadzone = 0.1;
   float size =30;
+  
+  boolean isHit = false;
+  long lastHitTime;
+  long damageIndicatorDuration = 500; // duration in milliseconds
   // Constructor to initialize position and health
   Player(float x, float y, float hp) {
     posX = x;
     posY = y;
     health = hp;
     angle = 0;
-    speed =4;
+    speed =5;
   }
 
   // Update player position and angle
   
   void updatePlayerAnalog(){
      // Map the analog stick values to a useful range with a dead zone
+   if (isHit && millis() - lastHitTime > damageIndicatorDuration) {
+      isHit = false;
+    }
   float moveX = map(arduino_values[1] - 512, -512, 512, -1, 1);  
   float moveY = map(arduino_values[2] - 512, -512, 512, 1, -1);  
   float lookX = map(arduino_values[3] - 512, -512, 512, -1, 1); 
@@ -123,11 +130,24 @@ class Player {
       }
     }
   }
+  
+  void takeDamage(float damage){
+    
+    health-=damage;
+    isHit = true;
+    lastHitTime = millis();
+    
+    
+  
+  }
   // Create a new bullet in the direction of the mouse
   void shoot() {
     
     Bullet b = new Bullet(posX, posY, angle);
     bullets.add(b); // Add to the list of bullets
+    
+    shootSound.play(); // Play the sound
+
   }
   // Update and draw bullets
   void drawPlayerBullets(){
@@ -175,13 +195,34 @@ class Player {
   // Display the player on the screen
   void displayPlayer() {
     //pushMatrix();
+    if(health<=0){
+      gameState=2;
+     
+    }
+    
     push();
      // Draw an equilateral triangle
     translate(posX, posY);
     rotate(angle);
 
     fill(0, 255, 0);
-    stroke(0);
+    if (isHit) {
+      strokeWeight(3);
+      stroke(255, 0, 0); // red stroke color when hit
+      float h = sqrt(3) / 2 * (size+10); // height of an equilateral triangle
+      beginShape();
+      rotate(100);
+      vertex(-(size+10) / 2, h / 2);
+      vertex((size+10)/ 2, h / 2);
+      vertex(0, -h / 2);
+      endShape(CLOSE);
+      pop();
+      
+    } else {
+      stroke(0); // default stroke color
+      
+    
+  
     float h = sqrt(3) / 2 * size; // height of an equilateral triangle
     beginShape();
     rotate(100);
@@ -190,6 +231,7 @@ class Player {
     vertex(0, -h / 2);
     endShape(CLOSE);
     pop();
+    }
   }
   
   void resetPlayer(){

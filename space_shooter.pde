@@ -1,6 +1,8 @@
 //Serial Communication
 import processing.serial.*;
+import processing.sound.*;
 
+SoundFile shootSound;
 Serial serialPort;
 String serialBuffer = "";
 int NUM_OF_VALUES_FROM_ARDUINO = 5;  /* CHANGE THIS ACCORDING TO YOUR PROJECT */
@@ -12,7 +14,7 @@ void getSerialData() {
   while (serialPort.available() > 0) {
     String in = serialPort.readStringUntil( 10 );  // 10 = '\n'  Linefeed in ASCII
     if (in != null) {
-      print("From Arduino: " + in);
+      //print("From Arduino: " + in);
       String[] serialInArray = split(trim(in), ",");
       if (serialInArray.length == NUM_OF_VALUES_FROM_ARDUINO) {
         for (int i=0; i<serialInArray.length; i++) {
@@ -136,7 +138,7 @@ void setup() {
   // to in the line below - this should be the same as you're
   // using in the "Port" menu in the Arduino IDE
   serialPort = new Serial(this, "COM3", 9600);
-
+  shootSound = new SoundFile(this, "pew.mp3"); 
 
 
 
@@ -179,6 +181,8 @@ void draw() {
 
     // Draw player
     player_1.displayPlayer();
+    
+  
 
 
     // Update and draw bullets and check collisions
@@ -278,4 +282,26 @@ void resetGame() {
   y = height / 2;
   //reset player information
   player_1.resetPlayer();
+  resetZombies();
+  
+  
+}
+
+
+void resetZombies(){
+  
+   for (int i = zombies.size() - 1; i >= 0; i--) {
+        zombies.remove(i);
+   }
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+   
 }
