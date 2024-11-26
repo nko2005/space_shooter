@@ -1,15 +1,17 @@
 //Serial Communication
 import processing.serial.*;
 import processing.sound.*;
+import java.util.ArrayList;
 
 SoundFile shootSound;
 Serial serialPort;
 String serialBuffer = "";
-int NUM_OF_VALUES_FROM_ARDUINO = 5;  /* CHANGE THIS ACCORDING TO YOUR PROJECT */
+// expected values are five: button,joystickA_X, joystickA_Y, joystickB_X,joystickB_Y
+int NUM_OF_VALUES_FROM_ARDUINO = 5; 
 
 /* This array stores values from Arduino */
 int arduino_values[] = new int[NUM_OF_VALUES_FROM_ARDUINO];
-
+//grabs data from arduino
 void getSerialData() {
   while (serialPort.available() > 0) {
     String in = serialPort.readStringUntil( 10 );  // 10 = '\n'  Linefeed in ASCII
@@ -30,56 +32,79 @@ void getSerialData() {
 
 // Initial positions
 float x, y;
-
+//set the game state to 0 (the start screen)
+//gameState = 0 (start screen)
+//gameState = 1 (game screen)
+//gameState = 2 (game over)
 int gameState = 0;
-//ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+//create player 
 Player player_1 = new Player(width/2, height/2, 100.0);
+//create list to store powerups
 ArrayList<Powerup> powerups = new ArrayList<Powerup>();
-
+//function to create powerup
 void createPowerups(){
-  //speed powerup
-   powerups.add(new Powerup(random(0, width), random(0, height), 0.5, color(0, 255, 0)));
-  //damage powerup
-  powerups.add(new Powerup(random(0, width), random(0, height), 0.5, color(255, 0, 0)));
+  //speed powerup (green)
+   powerups.add(new Powerup(width/2, height/2, 3, color(0, 255, 0)));
+  //damage powerup (red)
+  powerups.add(new Powerup(width/2+100, height/2+100, 2, color(255, 0, 0)));
+  //nuke powerup  (orange)
+  powerups.add(new Powerup(width/2+200,height/2+200, 0,color(255, 165, 0)));
+  // double points powerup (purple)
+  powerups.add(new Powerup(width/2-200,height/2-200, 0,color(160, 32, 240)));
   
 }
-
-//void updateAndDrawPowerups(){
-  
-//   for (int i = powerups.size() - 1; i >= 0; i--) {
-     
-//     Powerup p = powerups.get(i);
-//     if(p.isConsumed()){
-       
-       
-       
-//     }
-     
-       
-    
-     
-     
-     
-//   }
-  
-//}
+void updateAndDrawPowerups(Player player) {
+  if(!powerups.isEmpty()){
+  for (int i = powerups.size() - 1; i >= 0; i--) {
+    Powerup p = powerups.get(i);
+    p.update();
+    if (p.isConsumed()||!p.isActive()) {
+      powerups.remove(i);
+    } else {
+      p.drawPowerup();
+      p.update();
+      p.checkCollision(player);
+        
+      }
+    }
+  }
+  }
 
 
 
+
+
+//list to store zombies 
 ArrayList<Zombie> zombies = new ArrayList<Zombie>();
+void createZombies(ArrayList<Zombie> zombies){
+  
+   zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20));
+  zombies.add(new Zombie(400, 300, 20));
 
-
+}
+//update zombies to move to player
 void updateZombies( ArrayList<Zombie> zombies, Player player) {
-
+ if(!zombies.isEmpty()){
   for (int j = zombies.size() - 1; j >= 0; j--) {
     Zombie z = zombies.get(j);
+    if(!z.isDead()){
     z.updateZombie(player, zombies);
     z.drawZombie();
   }
+ }
 }
-
+}
+//list to store particles 
 ArrayList<Particle> particles = new ArrayList<Particle>();
-
+/// function that creates particles and add them to the list 
 void createParticles(float x, float y) {
   int numParticles = 20; // Number of particles per explosion
   for (int i = 0; i < numParticles; i++) {
@@ -87,8 +112,9 @@ void createParticles(float x, float y) {
     particles.add(new Particle(x, y));
   }
 }
-
+//function that draws and animates the list of particels 
 void updateAndDrawParticles() {
+  if(!particles.isEmpty()){
   for (int i = particles.size() - 1; i >= 0; i--) {
     Particle p = particles.get(i);
     p.updateParticle();
@@ -97,10 +123,11 @@ void updateAndDrawParticles() {
       particles.remove(i);
     }
   }
+  }
 }
-
+//list to store asteroids 
 ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
-
+//function to create asteriods and add them to the list 
 void createAsteroids(ArrayList<Asteroid> asteroids) {
   int numAsteriods = 20;
   for (int i = 0; i < numAsteriods; i++) {
@@ -113,8 +140,9 @@ void createAsteroids(ArrayList<Asteroid> asteroids) {
     }
   }
 }
-
-void updateAndDrawAsteriods() {
+//draw and move the asteriods on the screen 
+void updateAndDrawAsteroids() {
+ if(!asteroids.isEmpty()){
   for (int i = asteroids.size() - 1; i >= 0; i--) {
     Asteroid a = asteroids.get(i);
     a.updateAsteroid();
@@ -122,6 +150,7 @@ void updateAndDrawAsteriods() {
     if (a.isOffScreen()) {
       asteroids.remove(i);
     }
+   }
   }
 }
 
@@ -147,21 +176,13 @@ void setup() {
   y = height / 2;
   //player_1.photo = loadImage("spaceshipplaceholder.png"); // Load image only once
 
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-
+ 
  
 
 
   createAsteroids(asteroids);
+  createZombies(zombies);
+  createPowerups();
 }
 
 void draw() {
@@ -169,7 +190,7 @@ void draw() {
     startScreen();
   } else if (gameState == 1) {
     background(255);
-    //get Analogsticksdata
+    //get Analog sticks data
     getSerialData();
     //print(arduino_values);
 
@@ -178,23 +199,15 @@ void draw() {
 
     // Move player based on key presses
     //player_1.updatePlayerMouse();
-
+    
     // Draw player
     player_1.displayPlayer();
-    
-  
-
-
+   
     // Update and draw bullets and check collisions
     player_1.drawPlayerBullets();
-
-
-    // remove bullets off screen
-    player_1.cleanPlayerBullets();
-
-
-
-
+    
+    //place powerups 
+    updateAndDrawPowerups(player_1);
 
 
     //draw and make the zombies follow the player
@@ -205,7 +218,7 @@ void draw() {
     pop();
     //create asteriods
     push();
-    updateAndDrawAsteriods();
+    updateAndDrawAsteroids();
     pop();
     //display the player HUD
     push();
@@ -221,7 +234,7 @@ void draw() {
 
 
 
-
+//functions for mouse and keyboard controls 
 void keyPressed() {
   if (gameState == 0) {
     // Start game only from start screen

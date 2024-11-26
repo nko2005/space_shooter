@@ -1,5 +1,5 @@
-class Zombie{
-  
+class Zombie {
+
   float posX, posY;
   float angle;
   float health=100;
@@ -10,27 +10,41 @@ class Zombie{
   float attackDamage = 10; // Damage per attack
   int attackCooldown = 60; // Frames between attacks
   int attackTimer = 0;
-  Zombie(float x,float y,float s){
+  boolean isDead=false;
+  float points = 100;
+
+  Zombie(float x, float y, float s) {
     posX = x;
     posY = y;
     size =s;
+  }
+  boolean isDead(){
+    return isDead;
+    
+  }
+  void takeDamage(float damage){
+    
+    health-=damage;
+    if( health<=0){
+      isDead=true;
+    }
     
     
   }
- 
-  
-void updateZombie(Player player, ArrayList<Zombie> zombies){
- // Move towards the player
-float deltaX = player.posX - posX;
-float deltaY = player.posY - posY;
 
-angle = atan2(deltaY, deltaX);  // Get angle towards player
+  void updateZombie(Player player, ArrayList<Zombie> zombies) {
+    // Move towards the player
+    if(health!=0){
+    float deltaX = player.posX - posX;
+    float deltaY = player.posY - posY;
 
-// Move the zombie towards the player 
-posX += cos(angle) * speed;
-posY += sin(angle) * speed;
+    angle = atan2(deltaY, deltaX);  // Get angle towards player
 
-// Apply separation behavior
+    // Move the zombie towards the player
+    posX += cos(angle) * speed;
+    posY += sin(angle) * speed;
+
+    // Apply separation behavior
     for (Zombie z : zombies) {
       if (z != this) {
         float distance = dist(posX, posY, z.posX, z.posY);
@@ -43,8 +57,8 @@ posY += sin(angle) * speed;
           posY += sin(repulsionAngle) * repulsionStrength;
         }
       }
- }
- // Check if within attack range and apply damage
+    }
+    // Check if within attack range and apply damage
     if (dist(posX, posY, player.posX, player.posY) < attackRange) {
       attackPlayer(player);
     }
@@ -54,23 +68,27 @@ posY += sin(angle) * speed;
       attackTimer--;
     }
   
+  }
+  else{
+    isDead=true;
+    
+  }
 }
-
-void attackPlayer(Player player) {
+  void attackPlayer(Player player) {
     if (attackTimer == 0) {
       player.takeDamage(attackDamage);
       attackTimer = attackCooldown; // Reset cooldown timer
     }
   }
 
-void drawZombie() {
+  void drawZombie() {
     push();
     translate(posX, posY);
     rotate(angle);
 
     fill(255, 0, 0);
     stroke(0);
-    
+
     // Draw an equilateral triangle
     float h = sqrt(3) / 2 * size; // height of an equilateral triangle
     beginShape();
@@ -82,5 +100,4 @@ void drawZombie() {
 
     pop();
   }
-  
 }
