@@ -6,7 +6,7 @@ class Powerup { //<>//
   float timer;
   color powerup_color;
   boolean consumed = false;
-  float lifespan=10000;
+  float lifespan=15000;
   float spawnTime = millis();
   boolean active =true;
   // Constructor
