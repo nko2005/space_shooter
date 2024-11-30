@@ -2,9 +2,9 @@ class Particle {
   float posX, posY;
   float velX, velY;
   float lifespan;
-  color col;
+  color clr;
   
-  Particle(float x, float y) {
+  Particle(float x, float y,color clr) {
     
     posX = x;
     posY = y;
@@ -13,20 +13,20 @@ class Particle {
     velX = cos(angle) * speed;
     velY = sin(angle) * speed;
     lifespan = 255;
-    col = color(255, 0, 0, lifespan);
+    this.clr=  color(red(clr), green(clr), blue(clr), lifespan);
     
   }
   
   void updateParticle() {
     posX += velX;
     posY += velY;
-    lifespan -= 4;
-    col = color(255, 0, 0, lifespan);
+    lifespan -= 8;
+    clr = color(red(clr), green(clr), blue(clr), lifespan);
   }
   
   void displayParticle() {
-    noStroke();
-    fill(col);
+    //noStroke();
+    fill(clr);
     ellipse(posX, posY, 5, 5);
   }
   

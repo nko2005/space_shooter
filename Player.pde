@@ -12,13 +12,22 @@ class Player {
   float lookX, lookY;
   float deadzone = 0.1;
   float size =30;
-
+  float maxhealth = 100;
   boolean isHit = false;
   long lastHitTime;
   long damageIndicatorDuration = 500; // duration in milliseconds
+ 
+  //perks stuff
+  ArrayList<String> activePerks = new ArrayList<String>();
   boolean hasSpeedPowerup=false;
   boolean hasDamagePowerup = false;
   boolean hasDoublePowerup = false;
+  
+  // Colors for each perk
+  color damageColor = color(255, 0, 0);  // Red for Damage Boost
+  color speedColor = color(0, 255, 0);   // Green for Speed Boost
+  color doubleColor = color(160, 32, 240); // Purple for Double Points
+  
   // Constructor to initialize position and health
   Player(float x, float y, float hp) {
     posX = x;
@@ -29,12 +38,26 @@ class Player {
   }
 
   // Update player position and angle
+   void updatePerks() {
+    activePerks.clear();
+    if (hasDamagePowerup) {
+      activePerks.add("Damage Boost");
+    }
+    if (hasSpeedPowerup) {
+      activePerks.add("Speed Boost");
+    }
+    if (hasDoublePowerup) {
+      activePerks.add("Double Points");
+    }
+  }
+
 
   void updatePlayerAnalog() {
     // Map the analog stick values to a useful range with a dead zone
     if (isHit && millis() - lastHitTime > damageIndicatorDuration) {
       isHit = false;
     }
+    updatePerks();
 
     float moveX = map(arduino_values[1] - 512, -512, 512, -1, 1);
     float moveY = map(arduino_values[2] - 512, -512, 512, 1, -1);
@@ -155,7 +178,7 @@ class Player {
               player_score+=100;
             }
             push();
-            createParticles(z.posX, z.posY);
+            createParticles(z.posX, z.posY,color(255,0,0));
             pop();
             zombies.remove(j);
             
@@ -165,6 +188,40 @@ class Player {
           }
         }
       }
+      
+       // Check for bullet collision with blobs
+      for (int j = blobs.size() - 1; j >= 0; j--) {
+        Blob bl = blobs.get(j);
+        if (dist(b.posX, b.posY, bl.posX, bl.posY) < bl.size / 2) {
+          bl.takeDamage(b.damage,blobs);
+          // Remove the bullet only if it exists
+           if (i >= 0 && i < bullets.size()) {
+                        bullets.remove(i);
+                    }
+          //createParticles(z.posX, z.posY);
+          if (bl.isDead()) {
+            if (hasDoublePowerup) {
+              player_score+=  2000;
+            } else {
+              player_score+=1000;
+            }
+            push();
+            createParticles(b.posX, b.posY,color(0,255,0));
+            pop();
+            blobs.remove(j);
+            
+
+
+            break;
+          }
+        }
+      }
+      
+      
+      
+      
+      
+      
     }
   }
   }
@@ -226,5 +283,18 @@ class Player {
     textAlign(LEFT, TOP);
     text("Health: " + health, 10, 10);
     text("Score: " + player_score, 10, 40);
+    text("perks:",10,60);
+    for (int i = 0; i < activePerks.size(); i++) {
+      // Set different colors for each perk
+      if (activePerks.get(i) == "Damage Boost") {
+        fill(damageColor);
+      } else if (activePerks.get(i) == "Speed Boost") {
+        fill(speedColor);
+      } else if (activePerks.get(i) == "Double Points") {
+        fill(doubleColor);
+      }
+      text(activePerks.get(i), 70+ i *100, 60); // Display each perk on the screen
+    }
+    
   }
 }
