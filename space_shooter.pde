@@ -73,21 +73,24 @@ void updateAndDrawPowerups(Player player) {
 
 
 
-
+//zombie sprite data 
+ PImage zombieSpriteSheet;
 //list to store zombies 
 ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 void createZombies(ArrayList<Zombie> zombies){
+  zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
+
   
-   zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
 
 }
 //update zombies to move to player
@@ -105,11 +108,11 @@ void updateZombies( ArrayList<Zombie> zombies, Player player) {
 //list to store particles 
 ArrayList<Particle> particles = new ArrayList<Particle>();
 /// function that creates particles and add them to the list 
-void createParticles(float x, float y) {
+void createParticles(float x, float y,color clr) {
   int numParticles = 20; // Number of particles per explosion
   for (int i = 0; i < numParticles; i++) {
 
-    particles.add(new Particle(x, y));
+    particles.add(new Particle(x, y,clr));
   }
 }
 //function that draws and animates the list of particels 
@@ -154,7 +157,27 @@ void updateAndDrawAsteroids() {
   }
 }
 
+ArrayList<Blob> blobs = new ArrayList<Blob>();
 
+void createBlobs(){
+Blob initialBlob = new Blob(100, 100, 40,500,1.0); 
+blobs.add(initialBlob);
+
+  
+  
+}
+
+void updateBlobs(Player player) {
+    for (Blob b : blobs) {
+        b.updateBlob(player, blobs);
+    }
+}
+
+void drawBlobs() {
+    for (Blob b : blobs) {
+        b.drawBlob();
+    }
+}
 
 void setup() {
   size(800, 800);  // Adjust size as necessary
@@ -183,6 +206,7 @@ void setup() {
   createAsteroids(asteroids);
   createZombies(zombies);
   createPowerups();
+  createBlobs();
 }
 
 void draw() {
@@ -221,9 +245,17 @@ void draw() {
     updateAndDrawAsteroids();
     pop();
     //display the player HUD
+    
+    push();
+    updateBlobs(player_1);
+    drawBlobs();
+    pop();
     push();
     player_1.displayPlayerHUD();
     pop();
+    
+    
+    
   } else if (gameState == 2) {
     gameOverScreen();
   }
@@ -306,15 +338,15 @@ void resetZombies(){
    for (int i = zombies.size() - 1; i >= 0; i--) {
         zombies.remove(i);
    }
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
-  zombies.add(new Zombie(200, 200, 20));
-  zombies.add(new Zombie(400, 300, 20));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
+  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
    
 }

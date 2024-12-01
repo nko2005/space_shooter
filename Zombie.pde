@@ -12,11 +12,23 @@ class Zombie {
   int attackTimer = 0;
   boolean isDead=false;
   float points = 100;
+  
+  //animation stuff
+ 
+  // Animation stuff
+  PImage spriteSheet;
+  int spriteWidth = 48, spriteHeight = 48;
+  int cols = 3, rows = 3; // 3x3 grid
+  int currentFrame = 0;
+  int frameCount = 8; 
+  int frameSpeed = 10; // Adjust to control animation speed
+  int frameTimer = 0;
 
-  Zombie(float x, float y, float s) {
+  Zombie(float x, float y, float s, PImage spriteSheet) {
     posX = x;
     posY = y;
     size =s;
+    this.spriteSheet = spriteSheet;
   }
   boolean isDead(){
     return isDead;
@@ -67,12 +79,20 @@ class Zombie {
     if (attackTimer > 0) {
       attackTimer--;
     }
-  
-  }
+    //update animation
+    // Update animation frame
+      frameTimer++;
+      if (frameTimer >= frameSpeed) {
+        frameTimer = 0;
+        currentFrame = (currentFrame + 1) % frameCount;
+      }
+      
+    }
   else{
     isDead=true;
     
   }
+    
 }
   void attackPlayer(Player player) {
     if (attackTimer == 0) {
@@ -82,21 +102,32 @@ class Zombie {
   }
 
   void drawZombie() {
-    push();
+    //push();
+    //translate(posX, posY);
+    //rotate(angle);
+
+    //fill(255, 0, 0);
+    //stroke(0);
+
+    //// Draw an equilateral triangle
+    //float h = sqrt(3) / 2 * size; // height of an equilateral triangle
+    //beginShape();
+    //rotate(100);
+    //vertex(-size / 2, h / 2);
+    //vertex(size / 2, h / 2);
+    //vertex(0, -h / 2);
+    //endShape(CLOSE);
+
+    //pop();
+     push();
     translate(posX, posY);
     rotate(angle);
 
-    fill(255, 0, 0);
-    stroke(0);
+    int spriteX = (currentFrame % cols) * spriteWidth;
+    int spriteY = (currentFrame / cols) * spriteHeight;
 
-    // Draw an equilateral triangle
-    float h = sqrt(3) / 2 * size; // height of an equilateral triangle
-    beginShape();
-    rotate(100);
-    vertex(-size / 2, h / 2);
-    vertex(size / 2, h / 2);
-    vertex(0, -h / 2);
-    endShape(CLOSE);
+    // Draw the current frame of the sprite sheet
+    image(spriteSheet, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight, spriteX, spriteY, spriteX + spriteWidth, spriteY + spriteHeight);
 
     pop();
   }

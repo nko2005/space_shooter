@@ -3,7 +3,7 @@ class Powerup { //<>//
   float modifier;
   float posX;
   float posY;
-  float timer;
+  float timer=15;
   color powerup_color;
   boolean consumed = false;
   float lifespan=15000;
@@ -14,7 +14,7 @@ class Powerup { //<>//
     posX = x;
     posY = y;
     modifier = mod;
-    timer = 10; // Default timer duration (e.g., 10 seconds)
+ 
     powerup_color = powerclr;
   }
   boolean isActive() {
@@ -77,7 +77,7 @@ class Powerup { //<>//
           zombies.remove(j);
 
           push();
-          createParticles(z.posX, z.posY);  // Create particles at the zombie's position
+          createParticles(z.posX, z.posY,color(255,0,0));  // Create particles at the zombie's position
           pop();
           player.player_score += 400;  // Increase player score
         }
