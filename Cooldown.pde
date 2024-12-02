@@ -64,3 +64,34 @@ class Player {
   
   // ... rest of the Player class ...
 }
+
+// modify *key pressed funcion to trigger ability
+void keyPressed() {
+  // ... existing key handling ...
+  
+  if (gameState == 1) {
+    // ... existing game controls ...
+    
+    // Use ability when 'E' is pressed
+    if (key == 'e' || key == 'E') {
+      player_1.useAbility();
+    }
+  }
+  
+  // ... rest of the function ...
+}
+
+
+// modify the draw function 
+void draw() {
+  if (gameState == 1) {
+    // ... existing game logic ...
+    
+    player_1.updateAbilityCooldown();
+    player_1.displayPlayer();
+    
+    // ... rest of the game logic ...
+  }
+  
+  // ... rest of the function ...
+}
