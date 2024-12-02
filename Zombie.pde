@@ -2,10 +2,10 @@ class Zombie {
 
   float posX, posY;
   float angle;
-  float health=100;
-  float size =10;
-  float speed =2;
-  float spacing_distance =20;
+  float health;
+  float size =40;
+  float speed;
+  float spacing_distance =40;
   float attackRange = 10; // Range within which the zombie can attack
   float attackDamage = 10; // Damage per attack
   int attackCooldown = 60; // Frames between attacks
@@ -23,22 +23,25 @@ class Zombie {
   int frameCount = 8; 
   int frameSpeed = 10; // Adjust to control animation speed
   int frameTimer = 0;
-
-  Zombie(float x, float y, float s, PImage spriteSheet) {
+  int spriteX;
+  int spriteY;
+  Zombie(float x, float y, float s, PImage spriteSheet,float h) {
     posX = x;
     posY = y;
-    size =s;
+    speed = s;
+    health =h;
     this.spriteSheet = spriteSheet;
   }
   boolean isDead(){
-    return isDead;
+    return health<=0;
     
   }
   void takeDamage(float damage){
     
-    health-=damage;
-    if( health<=0){
-      isDead=true;
+   health -= damage;
+    if (health <= 0) {
+      health = 0;
+      println("Zombie died!");  // Debugging when zombie dies
     }
     
     
@@ -88,10 +91,7 @@ class Zombie {
       }
       
     }
-  else{
-    isDead=true;
-    
-  }
+
     
 }
   void attackPlayer(Player player) {
@@ -123,8 +123,8 @@ class Zombie {
     translate(posX, posY);
     rotate(angle);
 
-    int spriteX = (currentFrame % cols) * spriteWidth;
-    int spriteY = (currentFrame / cols) * spriteHeight;
+    spriteX = (currentFrame % cols) * spriteWidth;
+    spriteY = (currentFrame / cols) * spriteHeight;
 
     // Draw the current frame of the sprite sheet
     image(spriteSheet, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight, spriteX, spriteY, spriteX + spriteWidth, spriteY + spriteHeight);

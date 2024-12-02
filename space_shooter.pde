@@ -36,6 +36,7 @@ float x, y;
 //gameState = 2 (game over)
 int gameState = 0;
 //create player 
+ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 Player player_1 = new Player(width/2, height/2, 100.0);
 //create list to store powerups
 ArrayList<Powerup> powerups = new ArrayList<Powerup>();
@@ -73,35 +74,29 @@ void updateAndDrawPowerups(Player player) {
 //zombie sprite data 
  PImage zombieSpriteSheet;
 //list to store zombies 
-ArrayList<Zombie> zombies = new ArrayList<Zombie>();
-void createZombies(ArrayList<Zombie> zombies){
-  zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
 
+Round round_master = new Round(25,10,player_1);
+//void createZombies(ArrayList<Zombie> zombies,int numEnemies,float waveSpeed,float waveHealth ){
+//  zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
+
+//  for(int i=0; i<numEnemies;i++){
+//      float cointoss = random(1,2);
+//      if(cointoss==1){
+//      zombies.add(new Zombie(random(width), 0, waveSpeed,zombieSpriteSheet,waveHealth));
+//      }
+//      else{
+//        zombies.add(new Zombie(0, random(height), waveSpeed,zombieSpriteSheet,waveHealth));
+        
+//      }
+
+    
+    
+//  }
   
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
 
-}
+//}
 //update zombies to move to player
-void updateZombies( ArrayList<Zombie> zombies, Player player) {
- if(!zombies.isEmpty()){
-  for (int j = zombies.size() - 1; j >= 0; j--) {
-    Zombie z = zombies.get(j);
-    if(!z.isDead()){
-    z.updateZombie(player, zombies);
-    z.drawZombie();
-  }
- }
-}
-}
+
 //list to store particles 
 ArrayList<Particle> particles = new ArrayList<Particle>();
 /// function that creates particles and add them to the list 
@@ -175,12 +170,20 @@ void drawBlobs() {
         b.drawBlob();
     }
 }
-
+PImage background;
+//void settings() {
+ 
+//  //size(displayWidth, displayHeight);
+//}
 void setup() {
-  size(800, 800);  // Adjust size as necessary
-  background(255);
+  background = loadImage("Game_background.png");
+  size(1440, 810);  // Adjust size as necessary
+   if (background != null) {
+   background.resize(width, height);
+  }
+ 
   frameRate(120);
-
+ 
 
   //printArray(Serial.list());
   // put the name of the serial port your Arduino is connected
@@ -198,10 +201,13 @@ void setup() {
 
  
  
+  zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
+  
+  
 
-
+  
   createAsteroids(asteroids);
-  createZombies(zombies);
+  //createZombies(zombies);
   createPowerups();
   createBlobs();
 }
@@ -210,7 +216,8 @@ void draw() {
   if (gameState == 0) {
     startScreen();
   } else if (gameState == 1) {
-    background(255);
+//background(255);
+ background(background);
     //get Analog sticks data
     getSerialData();
     //print(arduino_values);
@@ -223,7 +230,7 @@ void draw() {
     
     // Draw player
     player_1.displayPlayer();
-   
+    
     // Update and draw bullets and check collisions
     player_1.drawPlayerBullets();
     
@@ -232,7 +239,9 @@ void draw() {
 
 
     //draw and make the zombies follow the player
-    updateZombies(zombies, player_1);
+   
+    round_master.checkRound(zombieSpriteSheet);
+     round_master.updateZombies();
     //create particle effect whenever zombie is kileld
     push();
     updateAndDrawParticles();
@@ -248,7 +257,7 @@ void draw() {
     drawBlobs();
     pop();
     push();
-    player_1.displayPlayerHUD();
+    player_1.displayPlayerHUD(round_master);
     pop();
     
     
@@ -324,26 +333,26 @@ void resetGame() {
   y = height / 2;
   //reset player information
   player_1.resetPlayer();
-  resetZombies();
+  //resetZombies();
   
   
 }
 
 
-void resetZombies(){
+//void resetZombies(){
   
-   for (int i = zombies.size() - 1; i >= 0; i--) {
-        zombies.remove(i);
-   }
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet));
-  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
+//   for (int i = zombies.size() - 1; i >= 0; i--) {
+//        zombies.remove(i);
+//   }
+//  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet,100));
+//  zombies.add(new Zombie(200, 200, 20,zombieSpriteSheet,10));
+//  zombies.add(new Zombie(400, 300, 20,zombieSpriteSheet));
    
-}
+//}

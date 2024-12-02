@@ -2,7 +2,7 @@ class Bullet {
   float posX, posY;
   float speed = 10;
   float angle;
-  float damage =50;
+  float damage =100;
   
   Bullet(float x, float y, float angle) {
     this.posX = x;
