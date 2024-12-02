@@ -37,3 +37,4 @@ void spawnWaveEnemies() {
     zombies.add(new Zombie(random(width), random(height), 20, currentWave.enemySpeed));
   }
 }
+

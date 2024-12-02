@@ -1,28 +1,45 @@
 class ShootingEnemy extends Zombie {
-  float shootCooldown = 2.0; // Time between shots in seconds
-  float shootTimer = 0;
+  ArrayList<Bullet> bullets;
+  float shootCooldown;
+  float lastShootTime;
 
-  ShootingEnemy(float x, float y, float size, float speed) {
-    super(x, y, size, speed);
+  ShootingEnemy(float x, float y, float health, PImage spriteSheet, float speed) {
+    super(x, y, health, spriteSheet, speed);
+    bullets = new ArrayList<Bullet>();
+    shootCooldown = 2000; // Shoot every 2 seconds
+    lastShootTime = millis();
   }
 
-  void update(Player player) {
+  void updateShootingEnemy(Player player, ArrayList<Zombie> zombies) {
     super.updateZombie(player, zombies);
-    shootTimer += 1.0 / frameRate;
-    if (shootTimer >= shootCooldown) {
+    if (millis() - lastShootTime > shootCooldown) {
       shoot(player);
-      shootTimer = 0;
+      lastShootTime = millis();
     }
+    updateBullets();
   }
 
   void shoot(Player player) {
-    PVector direction = PVector.sub(player.position, position).normalize();
-    // Add a new bullet to a list of enemy bullets
-    enemyBullets.add(new Bullet(position.x, position.y, direction));
+    float angle = atan2(player.y - y, player.x - x);
+    bullets.add(new Bullet(x, y, angle, 5, color(255, 0, 0)));
   }
 
-  void display() {
-    fill(255, 0, 0); // Red color to distinguish from regular zombies
-    ellipse(position.x, position.y, size, size);
+  void updateBullets() {
+    for (int i = bullets.size() - 1; i >= 0; i--) {
+      Bullet b = bullets.get(i);
+      b.update();
+      b.display();
+      if (b.isOffScreen()) {
+        bullets.remove(i);
+      } else if (b.checkCollision(player_1)) {
+        player_1.takeDamage(10);
+        bullets.remove(i);
+      }
+    }
+  }
+
+  void drawShootingEnemy() {
+    super.drawZombie();
+    updateBullets();
   }
 }

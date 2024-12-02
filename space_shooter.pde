@@ -28,8 +28,6 @@ void getSerialData() {
 }
 
 
-
-
 // Initial positions
 float x, y;
 //set the game state to 0 (the start screen)
@@ -69,7 +67,6 @@ void updateAndDrawPowerups(Player player) {
     }
   }
   }
-
 
 
 
