@@ -17,7 +17,7 @@ void loop() {
   // Use a string to accumulate the data before sending it
   String serialData = "";
 
-  if (fire_button_prev == LOW && fire_button == HIGH) {
+  if (fire_button == HIGH) {
     serialData += "1,";
   } else {
     serialData += "0,";
@@ -30,7 +30,7 @@ void loop() {
 
   Serial.print(serialData);
 
-  fire_button_prev = fire_button;
+  //fire_button_prev = fire_button;
 
   delay(20);  // Small delay to avoid overwhelming the serial buffer
 }

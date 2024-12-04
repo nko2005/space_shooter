@@ -11,7 +11,7 @@ class Zombie {
   int attackCooldown = 60; // Frames between attacks
   int attackTimer = 0;
   boolean isDead=false;
-  float points = 100;
+  float points = 60;
   
   //animation stuff
  

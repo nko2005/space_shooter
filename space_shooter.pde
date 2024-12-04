@@ -41,33 +41,33 @@ Player player_1 = new Player(width/2, height/2, 100.0);
 //create list to store powerups
 ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 //function to create powerup
-void createPowerups(){
-  //speed powerup (green)
-   powerups.add(new Powerup(width/2, height/2, 3, color(0, 255, 0)));
-  //damage powerup (red)
-  powerups.add(new Powerup(width/2+100, height/2+100, 2, color(255, 0, 0)));
-  //nuke powerup  (orange)
-  powerups.add(new Powerup(width/2+200,height/2+200, 0,color(255, 165, 0)));
-  // double points powerup (purple)
-  powerups.add(new Powerup(width/2-200,height/2-200, 0,color(160, 32, 240)));
+//void createPowerups(){
+//  //speed powerup (green)
+//   powerups.add(new Powerup(width/2, height/2, 3, color(0, 255, 0)));
+//  //damage powerup (red)
+//  powerups.add(new Powerup(width/2+100, height/2+100, 2, color(255, 0, 0)));
+//  //nuke powerup  (orange)
+//  powerups.add(new Powerup(width/2+200,height/2+200, 0,color(255, 165, 0)));
+//  // double points powerup (purple)
+//  powerups.add(new Powerup(width/2-200,height/2-200, 0,color(160, 32, 240)));
   
-}
-void updateAndDrawPowerups(Player player) {
-  if(!powerups.isEmpty()){
-  for (int i = powerups.size() - 1; i >= 0; i--) {
-    Powerup p = powerups.get(i);
-    p.update();
-    if (p.isConsumed()||!p.isActive()) {
-      powerups.remove(i);
-    } else {
-      p.drawPowerup();
-      p.update();
-      p.checkCollision(player);
+//}
+//void updateAndDrawPowerups(Player player) {
+//  if(!powerups.isEmpty()){
+//  for (int i = powerups.size() - 1; i >= 0; i--) {
+//    Powerup p = powerups.get(i);
+//    p.update();
+//    if (p.isConsumed()||!p.isActive()) {
+//      powerups.remove(i);
+//    } else {
+//      p.drawPowerup();
+//      p.update();
+//      p.checkCollision(player);
         
-      }
-    }
-  }
-  }
+//      }
+//    }
+//  }
+//  }
 
 
 
@@ -75,7 +75,7 @@ void updateAndDrawPowerups(Player player) {
  PImage zombieSpriteSheet;
 //list to store zombies 
 
-Round round_master = new Round(25,10,player_1);
+Round round_master = new Round(5,1,player_1);
 //void createZombies(ArrayList<Zombie> zombies,int numEnemies,float waveSpeed,float waveHealth ){
 //  zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
 
@@ -121,68 +121,76 @@ void updateAndDrawParticles() {
   }
 }
 //list to store asteroids 
-ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+//ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
 //function to create asteriods and add them to the list 
-void createAsteroids(ArrayList<Asteroid> asteroids) {
-  int numAsteriods = 20;
-  for (int i = 0; i < numAsteriods; i++) {
-    float random_pull = random(1, 2);
-    if (random_pull==1) {
-      asteroids.add(new Asteroid(random(0, width), 0.0, 10.0, color(random(255), random(255), random(255)), random(-3, 3), random(-3, 3), 50.0));
-    } else {
+//void createAsteroids(ArrayList<Asteroid> asteroids) {
+//  int numAsteriods = 20;
+//  for (int i = 0; i < numAsteriods; i++) {
+//    float random_pull = random(1, 2);
+//    if (random_pull==1) {
+//      asteroids.add(new Asteroid(random(0, width), 0.0, 10.0, color(random(255), random(255), random(255)), random(-3, 3), random(-3, 3), 50.0));
+//    } else {
 
-      asteroids.add(new Asteroid(0.0, random(0, height), 10.0, color(random(255), random(255), random(255)), random(-3, 3), random(-3, 3), 50.0));
-    }
-  }
-}
-//draw and move the asteriods on the screen 
-void updateAndDrawAsteroids() {
- if(!asteroids.isEmpty()){
-  for (int i = asteroids.size() - 1; i >= 0; i--) {
-    Asteroid a = asteroids.get(i);
-    a.updateAsteroid();
-    a.displayAsteroid();
-    if (a.isOffScreen()) {
-      asteroids.remove(i);
-    }
-   }
-  }
-}
+//      asteroids.add(new Asteroid(0.0, random(0, height), 10.0, color(random(255), random(255), random(255)), random(-3, 3), random(-3, 3), 50.0));
+//    }
+//  }
+//}
+////draw and move the asteriods on the screen 
+//void updateAndDrawAsteroids() {
+// if(!asteroids.isEmpty()){
+//  for (int i = asteroids.size() - 1; i >= 0; i--) {
+//    Asteroid a = asteroids.get(i);
+//    a.updateAsteroid();
+//    a.displayAsteroid();
+//    if (a.isOffScreen()) {
+//      asteroids.remove(i);
+//    }
+//   }
+//  }
+//}
 
 ArrayList<Blob> blobs = new ArrayList<Blob>();
 
-void createBlobs(){
-Blob initialBlob = new Blob(100, 100, 40,500,1.0); 
-blobs.add(initialBlob);
+//void createBlobs(){
+//Blob initialBlob = new Blob(100, 100, 40,500,1.0); 
+//blobs.add(initialBlob);
 
   
   
-}
+//}
 
-void updateBlobs(Player player) {
-    for (Blob b : blobs) {
-        b.updateBlob(player, blobs);
-    }
-}
+//void updateBlobs(Player player) {
+//    for (Blob b : blobs) {
+//        b.updateBlob(player, blobs);
+//    }
+//}
 
-void drawBlobs() {
-    for (Blob b : blobs) {
-        b.drawBlob();
-    }
-}
+//void drawBlobs() {
+//    for (Blob b : blobs) {
+//        b.drawBlob();
+//    }
+//}
 PImage background;
 //void settings() {
  
 //  //size(displayWidth, displayHeight);
 //}
+
+
+PFont customFont;
+ArrayList<PImage> health_status = new ArrayList<PImage>();
+
 void setup() {
-  background = loadImage("Game_background.png");
+  background = loadImage("final_game_background.png");
   size(1440, 810);  // Adjust size as necessary
+   customFont = createFont("operius/operius-regular.ttf", 48); // Load the TTF font from the data folder
+  textFont(customFont); // Set the font for text drawing
    if (background != null) {
    background.resize(width, height);
   }
  
   frameRate(120);
+  
  
 
   //printArray(Serial.list());
@@ -197,19 +205,31 @@ void setup() {
 
   x = width / 2;
   y = height / 2;
+  player_1.posX=x;
+   player_1.posY=y;
+  
   //player_1.photo = loadImage("spaceshipplaceholder.png"); // Load image only once
 
  
  
   zombieSpriteSheet = loadImage("Zombie_SpriteSheet.png");
+  PImage icon;
+  for(int i=0; i<7;i++){
+    String text = "skull00" + (i + 1) + ".png";
+   
+    icon = loadImage(text);
+    icon.resize(64,64);
+    health_status.add(icon);
+    
+  }
   
   
 
   
-  createAsteroids(asteroids);
+  //createAsteroids(asteroids);
   //createZombies(zombies);
-  createPowerups();
-  createBlobs();
+  //createPowerups();
+
 }
 
 void draw() {
@@ -217,6 +237,7 @@ void draw() {
     startScreen();
   } else if (gameState == 1) {
 //background(255);
+
  background(background);
     //get Analog sticks data
     getSerialData();
@@ -235,27 +256,34 @@ void draw() {
     player_1.drawPlayerBullets();
     
     //place powerups 
-    updateAndDrawPowerups(player_1);
+    //updateAndDrawPowerups(player_1);
 
 
     //draw and make the zombies follow the player
    
     round_master.checkRound(zombieSpriteSheet);
-     round_master.updateZombies();
+    round_master.updateZombies();
+    push();
+    round_master.updateBlobs();
+    pop();
     //create particle effect whenever zombie is kileld
     push();
     updateAndDrawParticles();
     pop();
     //create asteriods
-    push();
-    updateAndDrawAsteroids();
-    pop();
+    round_master.checkPlayerStatus();
+    round_master.updatePowerups();
+    
+    
+    //push();
+    ////updateAndDrawAsteroids();
+    //pop();
     //display the player HUD
     
-    push();
-    updateBlobs(player_1);
-    drawBlobs();
-    pop();
+    //push();
+    //updateBlobs(player_1);
+    //drawBlobs();
+    //pop();
     push();
     player_1.displayPlayerHUD(round_master);
     pop();

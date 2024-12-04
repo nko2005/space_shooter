@@ -25,8 +25,14 @@ class Particle {
   }
   
   void displayParticle() {
+    if(lifespan<0){
+      lifespan=0;
+      
+    }
     //noStroke();
     fill(clr);
+    strokeWeight(map(lifespan,0,255,0,3));
+  //  stroke(lifespan);
     ellipse(posX, posY, 5, 5);
   }
   

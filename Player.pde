@@ -2,7 +2,8 @@
 
 class Player {
   //health stuff
-   float health;
+  float health;
+  float baseSpeed =10;
   float maxHealth=100;  // Maximum health
   float healthRegenRate=5;  // Amount of health to regenerate per interval
   int regenCooldown=1000;  // Cooldown time between regenerations (in milliseconds)
@@ -28,6 +29,15 @@ class Player {
   boolean hasDamagePowerup = false;
   boolean hasDoublePowerup = false;
   boolean hasHealthPowerup = false;
+  float powerUpTimeSpeed=0.0;
+  float powerUpTimeDamage=0.0;
+  float powerUpTimeDouble=0.0;
+  
+  //shooting mechanic
+  int shootCooldown = 150; // Cooldown duration in milliseconds
+int lastShotTime = 0; // Timestamp of the last shot
+
+
 
   // Colors for each perk
   color damageColor = color(255, 0, 0);  // Red for Damage Boost
@@ -39,37 +49,93 @@ class Player {
     posY = y;
     health = hp;
     angle = 0;
-    speed = 5;
+    speed = 10;
   }
 
   boolean isDead() {
 
     return health<=0;
   }
-
-  void updatePerks() {
-
-
-
-    activePerks.clear();
+  void applyPowerup() {
+    // Damage Powerup
     if (hasDamagePowerup) {
-      activePerks.add("Damage Boost");
+        if (millis() - powerUpTimeDamage < 30000) {
+            //// Apply damage powerup effect
+            //for (Bullet b : bullets) {
+            //    b.damage = 100;
+            //}
+            shootCooldown=100;
+        } else {
+            // Reset bullet damage and deactivate powerup
+            hasDamagePowerup = false;
+            shootCooldown=150;
+            for (Bullet b : bullets) {
+                b.damage = 10; // assuming 10 is the default bullet damage
+            }
+        }
     }
+
+    // Speed Powerup
     if (hasSpeedPowerup) {
-      activePerks.add("Speed Boost");
+        if (millis() - powerUpTimeSpeed <30000) {
+            // Apply speed powerup effect
+            speed = baseSpeed+5;
+        } else {
+            // Reset speed and deactivate powerup
+            hasSpeedPowerup = false;
+            speed = baseSpeed; // reset to the original speed
+             activePerks.remove("Speed Boost");
+        }
     }
+
+    // Double Points Powerup
     if (hasDoublePowerup) {
-      activePerks.add("Double Points");
+        if (millis() - powerUpTimeDouble < 30000) {
+            // Apply double points effect
+            //activePerks.add("Double Points");
+        } else {
+            // Deactivate double points powerup
+            hasDoublePowerup = false;
+            activePerks.remove("Double Points");
+        }
     }
+}
+boolean added_dmg=false;
+boolean added_speed=false;
+boolean added_points=false;
+void updatePerks() {
+
+
+
+  activePerks.clear();
+  if (hasDamagePowerup) {
+  
+    activePerks.add("Rapid Fire");
+    added_dmg = true;
+    
   }
+  if (hasSpeedPowerup) {
+   
+    activePerks.add("Speed Boost");
+    added_speed= true;
+    
+    
+  }
+  if (hasDoublePowerup) {
+   
+    activePerks.add("Double Points");
+    added_points = true;
+  
+}
+}
 
-  void updateHealth() {
-    if (!isDead()) {
+void updateHealth() {
+  if (!isDead()) {
 
-      if (health < maxHealth) {
-        if (millis() - lastHitTime >= 3000) {
-            if (millis() - lastRegenTime >= regenCooldown) {
-            
+    if (health < maxHealth) {
+      if (millis() - lastHitTime >= 3000) {
+        if (millis() - lastRegenTime >= regenCooldown) {
+
           // Regenerate health based on the percentage of health the player has left
           float healthPercentage = health / maxHealth;
 
@@ -85,13 +151,13 @@ class Player {
             health = maxHealth;
             regenCooldown =1000;
           }
-            regenCooldown-= regenCooldown*healthPercentage;
-            lastRegenTime = millis();
+          regenCooldown-= regenCooldown*healthPercentage;
+          lastRegenTime = millis();
         }
       }
     }
   }
-  }
+}
 
 void updatePlayerAnalog() {
   if (isHit && millis() - lastHitTime > damageIndicatorDuration) {
@@ -99,7 +165,7 @@ void updatePlayerAnalog() {
   }
   updatePerks();
   updateHealth();
-
+  applyPowerup();
   float moveX = map(arduino_values[1] - 512, -512, 512, -1, 1);
   float moveY = map(arduino_values[2] - 512, -512, 512, 1, -1);
   float lookX = map(arduino_values[3] - 512, -512, 512, -1, 1);
@@ -116,7 +182,12 @@ void updatePlayerAnalog() {
   }
 
   if (arduino_values[0] == 1) {
+    
+    if (millis() - lastShotTime >= shootCooldown) {
     shoot();
+    lastShotTime = millis();
+    
+    }
   }
 
   if (posY <= 0) posY = 0;
@@ -167,7 +238,7 @@ void drawPlayerBullets() {
           z.takeDamage(b.damage);
           bulletsToRemove.add(b); // Mark bullet for removal
           if (z.isDead()) {
-            player_score += hasDoublePowerup ? 200 : 100;
+            player_score += hasDoublePowerup ? 200 : 60;
             //zombies.remove(j); // Optional: Handle zombie removal elsewhere
             break;
           }
@@ -179,7 +250,7 @@ void drawPlayerBullets() {
       // Check for bullet collision with blobs
       for (int j = blobs.size() - 1; j >= 0; j--) {
         Blob bl = blobs.get(j);
-        if (dist(b.posX, b.posY, bl.posX, bl.posY) < bl.size / 2) {
+        if (dist(b.posX, b.posY, bl.posX, bl.posY) < ((bl.size / 2) +10)) {
           bl.takeDamage(b.damage, blobs);
           bulletsToRemove.add(b); // Mark bullet for removal
           if (bl.isDead()) {
@@ -204,6 +275,7 @@ void displayPlayer() {
     gameState = 2;
     return;
   }
+  if(gameState==1){
 
   push();
   translate(posX, posY);
@@ -234,6 +306,7 @@ void displayPlayer() {
   }
 
   pop();
+  }
 }
 
 void resetPlayer() {
@@ -247,25 +320,49 @@ void resetPlayer() {
 }
 
 void displayPlayerHUD(Round round) {
+  
+  
+  push();
+ // Draw the red screen effect if health is low
+  if (health < maxHealth * 0.5) { // 50% of max health
+    float alpha = map(health, 0, maxHealth * 0.5, 200, 0); // More opaque as health decreases
+    fill(255, 0, 0, alpha); // Red with variable alpha
+    noStroke();
+    rect(0, 0, width, height); // Draw red overlay
+  }
+  
+  pop();
+  
+  
+  
+  
+  
   fill(0);
-  textSize(24);
+  textSize(20);
   textAlign(LEFT, TOP);
-  text("Health: " + int(health), 10, 10);
-  text("Score: " + player_score, 10, 40);
-  text("Perks:", 10, 60);
+  //text("Health: " , 10, 10);
+  push();
+  int index = (int)map(health,0,maxHealth,6,0);
+  
+  image(health_status.get(index),110,5);
+  pop();
+  
+  
+  text("Score: " + player_score, 110, 70);
+  text("Perks:", 110, 110);
   push();
   for (int i = 0; i < activePerks.size(); i++) {
-    if (activePerks.get(i).equals("Damage Boost")) {
+    if (activePerks.get(i).equals("Rapid Fire")) {
       fill(damageColor);
     } else if (activePerks.get(i).equals("Speed Boost")) {
       fill(speedColor);
     } else if (activePerks.get(i).equals("Double Points")) {
       fill(doubleColor);
     }
-    text(activePerks.get(i), 70 + i * 150, 60);
+    text(activePerks.get(i), 120 + i * 150, 90);
   }
   pop();
-  
-  text("Round: "+ round.roundCount,10,80);
+
+  text("Round: "+ round.roundCount, 110, 140);
 }
 }

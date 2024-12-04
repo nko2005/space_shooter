@@ -3,6 +3,7 @@ class Bullet {
   float speed = 10;
   float angle;
   float damage =100;
+  float maxSpeed =15;
   
   Bullet(float x, float y, float angle) {
     this.posX = x;
@@ -14,6 +15,13 @@ class Bullet {
     // Move the bullet in the direction of the angle
     posX += cos(angle) * speed;
     posY += sin(angle) * speed;
+    speed+=2;
+    if(speed>maxSpeed){
+      
+      speed = maxSpeed;
+      
+    }
+    
   }
 
   void displayBullet() {

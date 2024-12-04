@@ -15,7 +15,7 @@ class Blob {
     int divideAmount;
     int maxDivide=4;
 
-    Blob(float posX, float posY, float size,float health,float speed) {
+    Blob(float posX, float posY, float size,float health,float speed,float attackDamage) {
         this.posX = posX;
         this.posY = posY;
         this.size = size;
@@ -46,9 +46,10 @@ class Blob {
         float newSize = size / 2;
         float newHealth = health/2;
         float newSpeed = speed +speed*0.2;
+        float newDamage = attackDamage/2;
         if(divideAmount<=maxDivide){
-        blobs.add(new Blob(posX + newSize, posY + newSize, newSize,newHealth,newSpeed));
-        blobs.add(new Blob(posX - newSize, posY - newSize, newSize,newHealth,newSpeed));
+        blobs.add(new Blob(posX + newSize, posY + newSize, newSize,newHealth,newSpeed,newDamage));
+        blobs.add(new Blob(posX - newSize, posY - newSize, newSize,newHealth,newSpeed,newDamage));
         }
        
         blobs.remove(this);
